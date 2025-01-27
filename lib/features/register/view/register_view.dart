@@ -64,7 +64,8 @@ class RegisterScreen extends StatelessWidget {
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return "Email is required";
-                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                              .hasMatch(value)) {
                             return "Enter a valid email";
                           }
                           return null;
@@ -92,9 +93,9 @@ class RegisterScreen extends StatelessWidget {
                       SizedBox(height: 16),
                       TextFormField(
                         controller: _phoneNumberController,
-                        keyboardType: TextInputType.number, // Enables number-only keyboard
+                        keyboardType: TextInputType.number,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly, // Restricts input to digits only
+                          FilteringTextInputFormatter.digitsOnly,
                         ],
                         decoration: InputDecoration(
                           labelText: "Phone",
@@ -150,7 +151,8 @@ class RegisterScreen extends StatelessWidget {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => LoginScreen()),
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
                               );
                             },
                             child: Text(

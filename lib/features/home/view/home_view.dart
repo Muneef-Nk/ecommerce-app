@@ -1,11 +1,12 @@
 import 'package:ecommerce_application/core/constants/color_constants.dart';
+import 'package:ecommerce_application/core/utils/helper_function.dart';
 import 'package:ecommerce_application/features/home/controller/home_controller.dart';
+import 'package:ecommerce_application/features/home/view/widgets/category_loading.dart';
 import 'package:ecommerce_application/features/home/view/widgets/heading.dart';
 import 'package:ecommerce_application/features/home/view/widgets/product_loading.dart';
 import 'package:ecommerce_application/features/home/view/widgets/proudct_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 
 class HomeEcommerceScreen extends StatefulWidget {
   const HomeEcommerceScreen({super.key});
@@ -18,9 +19,19 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<HomeController>(context, listen: false).fetchHomeData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Provider.of<HomeController>(context, listen: false).fetchHomeData();
+      getData();
+    });
   }
 
+  getData() async {
+    name = await getName();
+    setState(() {});
+  }
+
+  var name;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +43,7 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Hi, Shammas',
+              'Hi, ${name ?? ""}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -93,7 +104,9 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
               child: Container(
                 height: 200,
                 padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 234, 75), borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 255, 234, 75),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -159,12 +172,16 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
               height: 100,
               child: Consumer<HomeController>(builder: (context, provider, _) {
                 return provider.isLoading
-                    ? ProductsLoading()
+                    ? CategoryLoading()
                     : ListView.builder(
-                        scrollDirection: Axis.horizontal, // Horizontal scrolling
-                        itemCount: provider.productsModel?.categories?.items?.length ?? 0, // Dynamically set item count
+                        scrollDirection:
+                            Axis.horizontal, // Horizontal scrolling
+                        itemCount:
+                            provider.productsModel?.categories?.items?.length ??
+                                0, // Dynamically set item count
                         itemBuilder: (context, index) {
-                          var item = provider.productsModel?.categories?.items?[index];
+                          var item =
+                              provider.productsModel?.categories?.items?[index];
                           return _categoryItem(
                             item?.categoryName ?? '', // Category name
                             item?.categoryImage ?? '', // Category image
@@ -179,19 +196,25 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
               onPressed: () {},
             ),
             Consumer<HomeController>(builder: (context, provider, _) {
-              return SizedBox(
-                height: 300,
-                child: provider.isLoading
-                    ? ProductsLoading()
-                    : provider.productsModel?.topSellingItems?.items?.isEmpty ?? true
-                        ? Center(child: Text("No top-selling items available.")) // Fallback message if no items are present
-                        : ListView.separated(
-                            itemCount: provider.productsModel?.topSellingItems?.items?.length ?? 0,
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                            separatorBuilder: (context, index) => SizedBox(width: 15),
+              return provider.isLoading
+                  ? ProductsLoading()
+                  : provider.productsModel?.topSellingItems?.items?.isEmpty ??
+                          true
+                      ? Center(child: Text("No top-selling items available."))
+                      : SizedBox(
+                          height: 300,
+                          child: ListView.separated(
+                            itemCount: provider.productsModel?.topSellingItems
+                                    ?.items?.length ??
+                                0,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            separatorBuilder: (context, index) =>
+                                SizedBox(width: 15),
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
-                              var item = provider.productsModel?.topSellingItems?.items?[index];
+                              var item = provider.productsModel?.topSellingItems
+                                  ?.items?[index];
                               return ProductContainer(
                                 image: item?.thumbnailImage ?? '',
                                 price: item?.price.toString() ?? '',
@@ -201,7 +224,7 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
                               );
                             },
                           ),
-              );
+                        );
             }),
             SizedBox(height: 15),
             Heading(
@@ -209,17 +232,22 @@ class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
               onPressed: () {},
             ),
             Consumer<HomeController>(builder: (context, provider, _) {
-              return provider.productsModel?.topSellingItems?.items?.isEmpty ?? true
+              return provider.productsModel?.bestOffers?.items?.isEmpty ?? true
                   ? Center(child: Text("No best offers items available."))
                   : SizedBox(
                       height: 300,
                       child: ListView.separated(
-                        itemCount: provider.productsModel?.bestOffers?.items?.length ?? 0,
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        separatorBuilder: (context, index) => SizedBox(width: 15),
+                        itemCount:
+                            provider.productsModel?.bestOffers?.items?.length ??
+                                0,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        separatorBuilder: (context, index) =>
+                            SizedBox(width: 15),
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          var item = provider.productsModel?.bestOffers?.items?[index];
+                          var item =
+                              provider.productsModel?.bestOffers?.items?[index];
                           return ProductContainer(
                             image: item?.thumbnailImage ?? '',
                             price: item?.price.toString() ?? '',

@@ -1,6 +1,5 @@
 import 'package:ecommerce_application/core/constants/color_constants.dart';
 import 'package:ecommerce_application/core/utils/loading.dart';
-import 'package:ecommerce_application/features/home/controller/home_controller.dart';
 import 'package:ecommerce_application/features/login/controller/login_controller.dart';
 import 'package:ecommerce_application/features/register/view/register_view.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "Please enter your email";
-                    } else if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(value)) {
+                    } else if (!RegExp(
+                            r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+                        .hasMatch(value)) {
                       return "Enter a valid email address";
                     }
                     return null;
@@ -191,7 +192,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => RegisterScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => RegisterScreen()),
                         );
                       },
                       child: Text(

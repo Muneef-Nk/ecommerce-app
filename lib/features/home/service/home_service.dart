@@ -18,7 +18,7 @@ class HomeApiService {
         },
       );
 
-      print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 200) {
         return ProductsModel.fromJson(jsonDecode(response.body));

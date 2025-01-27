@@ -17,5 +17,6 @@ class HomeController with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+    notifyListeners();
   }
 }

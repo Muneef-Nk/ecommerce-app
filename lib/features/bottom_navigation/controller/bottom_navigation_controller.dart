@@ -1,4 +1,3 @@
-import 'package:ecommerce_application/features/account/view/provider_view.dart';
 import 'package:ecommerce_application/features/cart/view/cart_view.dart';
 import 'package:ecommerce_application/features/category/view/category_view.dart';
 import 'package:ecommerce_application/features/home/view/home_view.dart';

@@ -1,9 +1,31 @@
 import 'package:ecommerce_application/core/constants/color_constants.dart';
+import 'package:ecommerce_application/core/utils/helper_function.dart';
 import 'package:ecommerce_application/features/profile/view/widgets/profile_container.dart';
 import 'package:flutter/material.dart';
 
-class ProfileView extends StatelessWidget {
+class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
+
+class _ProfileViewState extends State<ProfileView> {
+  var name;
+  var email;
+  var photo;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    name = await getName();
+    email = await getEmail();
+    photo = await getProfile();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +57,13 @@ class ProfileView extends StatelessWidget {
             Stack(
               alignment: Alignment.bottomRight,
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/profile_placeholder.jpg'),
-                ),
+                CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(
+                      photo == ''
+                          ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                          : photo,
+                    )),
                 CircleAvatar(
                   radius: 15,
                   backgroundColor: AppColor.primary,
@@ -55,7 +80,7 @@ class ProfileView extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             Text(
-              'Shammas',
+              '$name',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black,
@@ -63,7 +88,7 @@ class ProfileView extends StatelessWidget {
               ),
             ),
             Text(
-              'shammas@gmail.com',
+              '$email',
               style: TextStyle(
                 fontSize: 16,
                 color: AppColor.primary,

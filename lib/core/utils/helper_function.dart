@@ -2,7 +2,8 @@ import 'package:ecommerce_application/features/login/model/login_success_model.d
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-showSnackBar({required BuildContext context, required String message, Color? color}) {
+showSnackBar(
+    {required BuildContext context, required String message, Color? color}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(
@@ -43,4 +44,19 @@ getAccessToken() async {
 getRefreshToken() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getString('refresh_token');
+}
+
+getName() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('name');
+}
+
+getEmail() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('email');
+}
+
+getProfile() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('profile_image');
 }

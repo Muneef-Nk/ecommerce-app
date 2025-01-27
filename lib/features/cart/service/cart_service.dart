@@ -16,15 +16,28 @@ class CartApiService {
         },
       );
 
-      print(response.statusCode);
+      print(response.body);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception('Failed to fetch cart. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to fetch cart. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error fetching cart: $e');
     }
   }
 }
+
+
+// getting res
+
+// I/flutter ( 8247):             "file": "/home/u167681531/domains/ecominnerix.com/public_html/app/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+// I/flutter ( 8247):             "line": 673,
+// I/flutter ( 8247):             "function": "match",
+// I/flutter ( 8247):             "class": "Illuminate\\Routing\\CompiledRouteCollection",
+// I/flutter ( 8247):             "type": "->"
+// I/flutter ( 8247):         },
+// I/flutter ( 8247):         {
+// I/flutter ( 8247):             "file": "/home/u167681531/domains/ecominnerix.com/public_html/
