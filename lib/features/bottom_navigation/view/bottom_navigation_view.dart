@@ -8,12 +8,10 @@ class BottomNavigationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 251, 251, 251),
-      body:
-          Consumer<BottomNavigationController>(builder: (context, provider, _) {
+      body: Consumer<BottomNavigationController>(builder: (context, provider, _) {
         return provider.screens[provider.selectedIndex];
       }),
-      bottomNavigationBar:
-          Consumer<BottomNavigationController>(builder: (context, provider, _) {
+      bottomNavigationBar: Consumer<BottomNavigationController>(builder: (context, provider, _) {
         return BottomNavigationBar(
           backgroundColor: Colors.white,
           selectedItemColor: AppColor.primary,

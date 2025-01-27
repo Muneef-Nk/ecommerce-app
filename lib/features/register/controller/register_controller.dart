@@ -1,5 +1,7 @@
 import 'package:ecommerce_application/core/constants/color_constants.dart';
 import 'package:ecommerce_application/core/utils/helper_function.dart';
+import 'package:ecommerce_application/features/bottom_navigation/view/bottom_navigation_view.dart';
+import 'package:ecommerce_application/features/register/model/register_model.dart';
 import 'package:ecommerce_application/features/register/service/register_service.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +14,6 @@ class RegisterController with ChangeNotifier {
     required String name,
     required String email,
     required String password,
-    // required String shopId,
     required String phoneNumber,
     required BuildContext context,
   }) async {
@@ -20,18 +21,27 @@ class RegisterController with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await RegisterService.registerUser(
+      RegisterModel response = await RegisterService.registerUser(
         name: name,
         email: email,
         password: password,
         phoneNumber: phoneNumber,
       );
 
-      showSnackBar(
-        context: context,
-        message: "User registered successfully!",
-        color: AppColor.primary,
-      );
+      if (response.status == true) {
+        showSnackBar(
+          context: context,
+          message: response.message ?? "User registered successfully!",
+          color: AppColor.primary,
+        );
+
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavigationView()), (route) => false);
+      } else {
+        showSnackBar(
+          context: context,
+          message: response.message ?? "Something went wrong!",
+        );
+      }
     } catch (e) {
       showSnackBar(
         context: context,

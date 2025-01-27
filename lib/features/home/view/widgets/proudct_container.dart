@@ -2,8 +2,19 @@ import 'package:ecommerce_application/core/constants/color_constants.dart';
 import 'package:flutter/material.dart';
 
 class ProductContainer extends StatelessWidget {
+  final String image;
+  final String title;
+  final String price;
+  final double rating;
+  final int reviews;
+
   const ProductContainer({
     super.key,
+    required this.image,
+    required this.title,
+    required this.price,
+    required this.rating,
+    required this.reviews,
   });
 
   @override
@@ -11,39 +22,42 @@ class ProductContainer extends StatelessWidget {
     return Container(
       width: 180,
       padding: EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade200,
-              spreadRadius: 1,
-              blurRadius: 15,
-            )
-          ]),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10), boxShadow: [
+        BoxShadow(
+          color: Colors.grey.shade200,
+          spreadRadius: 1,
+          blurRadius: 15,
+        )
+      ]),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Align(
             alignment: Alignment.center,
-            child: Image.asset(
-              "assets/thum.webp",
-              height: 150,
-              fit: BoxFit.cover,
-            ),
+            child: image.isEmpty
+                ? Image.asset(
+                    "assets/thum.webp",
+                    height: 150,
+                    fit: BoxFit.cover,
+                  )
+                : Image.network(
+                    image,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
           ),
           SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Text(
-              "jljlj",
+              title,
               style: const TextStyle(fontSize: 14),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
-              'RS. 99.99',
+              'RS. ${price}',
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
             ),
           ),
@@ -56,7 +70,7 @@ class ProductContainer extends StatelessWidget {
                   children: [
                     Icon(Icons.star, color: AppColor.primary, size: 14),
                     Text(
-                      '4.6',
+                      '$rating',
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
@@ -64,7 +78,7 @@ class ProductContainer extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      '77',
+                      '$reviews',
                       style: TextStyle(fontSize: 12),
                     ),
                     SizedBox(width: 2),

@@ -1,24 +1,18 @@
-import 'package:ecommerce_application/features/home/repository/home_repository.dart';
+import 'package:ecommerce_application/features/home/model/products_model.dart';
+import 'package:ecommerce_application/features/home/service/home_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeController with ChangeNotifier {
-  final HomeRepository _homeRepository = HomeRepository();
-
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-
-  Map<String, dynamic>? _homeData;
-  Map<String, dynamic>? get homeData => _homeData;
-
+  ProductsModel? productsModel;
   Future<void> fetchHomeData() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      _homeData = await _homeRepository.fetchHomeData();
-      print('Home data fetched successfully: $_homeData');
+      productsModel = await HomeApiService.fetchHomeData();
     } catch (e) {
-      print('Error fetching home data: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

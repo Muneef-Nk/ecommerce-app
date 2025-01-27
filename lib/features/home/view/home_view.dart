@@ -1,10 +1,25 @@
 import 'package:ecommerce_application/core/constants/color_constants.dart';
+import 'package:ecommerce_application/features/home/controller/home_controller.dart';
 import 'package:ecommerce_application/features/home/view/widgets/heading.dart';
+import 'package:ecommerce_application/features/home/view/widgets/product_loading.dart';
 import 'package:ecommerce_application/features/home/view/widgets/proudct_container.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
-class HomeEcommerceScreen extends StatelessWidget {
+class HomeEcommerceScreen extends StatefulWidget {
   const HomeEcommerceScreen({super.key});
+
+  @override
+  State<HomeEcommerceScreen> createState() => _HomeEcommerceScreenState();
+}
+
+class _HomeEcommerceScreenState extends State<HomeEcommerceScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<HomeController>(context, listen: false).fetchHomeData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +93,7 @@ class HomeEcommerceScreen extends StatelessWidget {
               child: Container(
                 height: 200,
                 padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 255, 234, 75),
-                    borderRadius: BorderRadius.circular(10)),
+                decoration: BoxDecoration(color: const Color.fromARGB(255, 255, 234, 75), borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -142,56 +155,82 @@ class HomeEcommerceScreen extends StatelessWidget {
               label: "Categories",
               onPressed: () {},
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _categoryItem('Electronics', ''),
-                    _categoryItem('Clothing', ''),
-                    _categoryItem('Home', ''),
-                    _categoryItem('Beauty', ''),
-                    _categoryItem('Toys', ''),
-                  ],
-                ),
-              ),
+            SizedBox(
+              height: 100,
+              child: Consumer<HomeController>(builder: (context, provider, _) {
+                return provider.isLoading
+                    ? ProductsLoading()
+                    : ListView.builder(
+                        scrollDirection: Axis.horizontal, // Horizontal scrolling
+                        itemCount: provider.productsModel?.categories?.items?.length ?? 0, // Dynamically set item count
+                        itemBuilder: (context, index) {
+                          var item = provider.productsModel?.categories?.items?[index];
+                          return _categoryItem(
+                            item?.categoryName ?? '', // Category name
+                            item?.categoryImage ?? '', // Category image
+                          );
+                        },
+                      );
+              }),
             ),
             SizedBox(height: 15),
             Heading(
               label: "Top Selling",
               onPressed: () {},
             ),
-            SizedBox(
-              height: 300,
-              child: ListView.separated(
-                itemCount: 10,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                separatorBuilder: (context, index) => SizedBox(width: 15),
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return ProductContainer();
-                },
-              ),
-            ),
+            Consumer<HomeController>(builder: (context, provider, _) {
+              return SizedBox(
+                height: 300,
+                child: provider.isLoading
+                    ? ProductsLoading()
+                    : provider.productsModel?.topSellingItems?.items?.isEmpty ?? true
+                        ? Center(child: Text("No top-selling items available.")) // Fallback message if no items are present
+                        : ListView.separated(
+                            itemCount: provider.productsModel?.topSellingItems?.items?.length ?? 0,
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            separatorBuilder: (context, index) => SizedBox(width: 15),
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              var item = provider.productsModel?.topSellingItems?.items?[index];
+                              return ProductContainer(
+                                image: item?.thumbnailImage ?? '',
+                                price: item?.price.toString() ?? '',
+                                rating: 4.5,
+                                reviews: 77,
+                                title: item?.name ?? '',
+                              );
+                            },
+                          ),
+              );
+            }),
             SizedBox(height: 15),
             Heading(
               label: "Best offers",
               onPressed: () {},
             ),
-            SizedBox(
-              height: 300,
-              child: ListView.separated(
-                itemCount: 10,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                separatorBuilder: (context, index) => SizedBox(width: 15),
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return ProductContainer();
-                },
-              ),
-            ),
+            Consumer<HomeController>(builder: (context, provider, _) {
+              return provider.productsModel?.topSellingItems?.items?.isEmpty ?? true
+                  ? Center(child: Text("No best offers items available."))
+                  : SizedBox(
+                      height: 300,
+                      child: ListView.separated(
+                        itemCount: provider.productsModel?.bestOffers?.items?.length ?? 0,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        separatorBuilder: (context, index) => SizedBox(width: 15),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          var item = provider.productsModel?.bestOffers?.items?[index];
+                          return ProductContainer(
+                            image: item?.thumbnailImage ?? '',
+                            price: item?.price.toString() ?? '',
+                            rating: 4.5,
+                            reviews: 77,
+                            title: item?.name ?? '',
+                          );
+                        },
+                      ),
+                    );
+            }),
           ],
         ),
       ),
@@ -203,14 +242,23 @@ class HomeEcommerceScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         children: [
-          CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.grey[200],
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.asset("assets/thum.webp"),
-            ),
-          ),
+          icon.isEmpty
+              ? CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.grey[200],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset("assets/thum.webp"),
+                  ),
+                )
+              : CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.grey[200],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.network(icon),
+                  ),
+                ),
           const SizedBox(height: 8),
           Text(
             title,

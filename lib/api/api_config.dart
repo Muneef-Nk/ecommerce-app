@@ -4,6 +4,7 @@ class ApiConfig {
   // Endpoints
   static const String LOGIN = '/login';
   static const String REGISTER = '/register';
+
   static const String HOME = '/v1/home';
   static const String CATEGORIES = '/categories';
   static const String CART = '/cart';
